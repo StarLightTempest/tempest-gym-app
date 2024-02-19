@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TrainingPlan index{% endblock %}
+
+{% block body %}
+    <h1>TrainingPlan index</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for training_plan in training_plans %}
+            <tr>
+                <td>{{ training_plan.id }}</td>
+                <td>{{ training_plan.name }}</td>
+                <td>
+                    <a href="{{ path('app_training_plan_show', {'id': training_plan.id}) }}">show</a>
+                    <a href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_training_plan_new') }}">Create new</a>
+{% endblock %}
