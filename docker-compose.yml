@@ -28,6 +28,7 @@ services:
       - MYSQL_USER=wilhelm357_
       - MYSQL_PASSWORD=myRootPwd298
       - MYSQL_DATABASE=gym_app_db_new_v3
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   adminer:
     image: adminer
