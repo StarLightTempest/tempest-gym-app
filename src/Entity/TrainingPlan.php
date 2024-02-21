@@ -24,10 +24,7 @@ class TrainingPlan
     #[ORM\ManyToOne(inversedBy: 'trainingPlans')]
     private ?Person $person_id = null;
 
-    public function __construct()
-    {
-        $this->trainingPlanXMachines = new ArrayCollection();
-    }
+
 
     public function getId(): ?int
     {

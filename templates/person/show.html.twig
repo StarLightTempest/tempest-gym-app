@@ -3,28 +3,32 @@
 {% block title %}Person{% endblock %}
 
 {% block body %}
-    <h1>Person</h1>
+    <main class="pt-20">
+        <div class="table-container w-4/5 mx-auto">
+            <h1 class="text-3xl font-bold mb-4 text-center">Person</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ person.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ person.name }}</td>
-            </tr>
-            <tr>
-                <th>Height</th>
-                <td>{{ person.height }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <table class="table is-fullwidth">
+                <tbody>
+                    <tr class="text-center">
+                        <th class="px-4 py-2">Id</th>
+                        <td class="border px-4 py-2">{{ person.id }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <th class="px-4 py-2">Name</th>
+                        <td class="border px-4 py-2">{{ person.name }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <th class="px-4 py-2">Height</th>
+                        <td class="border px-4 py-2">{{ person.height }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <a href="{{ path('app_person_index') }}">back to list</a>
-
-    <a href="{{ path('app_person_edit', {'id': person.id}) }}">edit</a>
-
-    {{ include('person/_delete_form.html.twig') }}
+            <div class="flex justify-between mt-4 mb-4">
+                <a class="button is-link px-4 py-2" href="{{ path('app_person_index') }}">Back to list</a>
+                <a class="button is-success px-4 py-2" href="{{ path('app_person_edit', {'id': person.id}) }}">Edit</a>
+                {{ include('person/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </main>
 {% endblock %}

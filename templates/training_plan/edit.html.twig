@@ -1,13 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit TrainingPlan{% endblock %}
+{% block title %}Edit Training Plan{% endblock %}
 
 {% block body %}
-    <h1>Edit TrainingPlan</h1>
+    <main class="pt-20">
+        <div class="table-container w-4/5 mx-auto">
+            <h1 class="text-3xl font-bold mb-4 text-center">Edit Training Plan</h1>
 
-    {{ include('training_plan/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_training_plan_index') }}">back to list</a>
-
-    {{ include('training_plan/_delete_form.html.twig') }}
+            {{ include('training_plan/_form.html.twig', {'button_label': 'Update'}) }}
+            
+            <div class="flex justify-between mt-4 mb-4">
+                <div>
+                    <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_index') }}">Back to list</a>
+                </div>
+                <div>
+                    {{ include('training_plan/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}

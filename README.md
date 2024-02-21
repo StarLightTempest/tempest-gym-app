@@ -1,5 +1,9 @@
 # gym_app
+To use doctrine with docker you always have to go into the Php container:
+docker exec -it <container_id> bash
 
+and route to the section:
+bin/console <befehls>
 
 
 ## Getting started

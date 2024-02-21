@@ -89,6 +89,9 @@ Run - composer require form validator security-csrf
    php bin/console make:crud Person
    php bin/console make:crud Machines
    php bin/console make:crud TrainingPlan
+   php bin/console make:crud TrainingPlanXMachine
+   php bin/console make:crud TrainingExecution
+   php bin/console make:crud WeightHistory
 
 7. configure the database connection in the .env file and create Database:
    symfony console doctrine:database:create
@@ -99,6 +102,8 @@ Run - composer require form validator security-csrf
 
 9. start the Symfony server:
    symfony server:start -d
+
+
 
 
 

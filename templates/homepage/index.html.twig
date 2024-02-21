@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<main class="pt-6 bg-gray-100 min-h-screen pb-16" style="background: url('{{ asset ('images/homepage-pic1.png') }}') no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+<div class="container mx-auto px-4 bg-white bg-opacity-75 rounded-lg p-6">
+    <!-- Section 1.1: Topic -->
+    <section class="my-8">
+        <h1 class="text-4xl font-bold text-center text-blue-500">Welcome to Our Tempest Gym App</h1>
+        <p class="text-lg text-center mt-4">Join us and start your journey to a healthier lifestyle. Track your progress, manage your training plans and stay motivated!</p>
+    </section>
+
+    <!-- Section 2: List all Persons from Database -->
+    <section class="my-8">
+        <h2 class="text-2xl font-bold mb-4 text-blue-500">Persons</h2>
+        <ul class="space-y-4">
+            {% for person in persons %}
+                <li class="p-4 border rounded shadow bg-white">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">{{ person.name }}</h3>
+                        <div class="flex space-x-2">
+                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_person_edit', {'id': person.id}) }}">Edit</a>
+                            {{ include('person/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Section 3: List all Machines -->
+    <section class="my-8">
+        <h2 class="text-2xl font-bold mb-4 text-blue-500">Machines</h2>
+        <ul class="space-y-4">
+            {% for machine in machines %}
+                <li class="p-4 border rounded shadow bg-white">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">{{ machine.name }}</h3>
+                        <div class="flex space-x-2">
+                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_machines_edit', {'id': machine.id}) }}">Edit</a>
+                            {{ include('machines/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Section 4: List all Training Plans -->
+    <section class="my-8">
+        <h2 class="text-2xl font-bold mb-4 text-blue-500">Training Plans</h2>
+        <ul class="space-y-4">
+            {% for training_plan in trainingPlans %}
+                <li class="p-4 border rounded shadow bg-white">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">{{ training_plan.name }}</h3>
+                        <div class="flex space-x-2">
+                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">Edit</a>
+                            {{ include('training_plan/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+</main>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TrainingPlanXMachine{% endblock %}
+
+{% block body %}
+    <main class="pt-20">
+        <div class="table-container w-4/5 mx-auto">
+            <h1 class="text-3xl font-bold mb-4 text-center">Create new TrainingPlanXMachine</h1>
+
+            {{ include('training_plan_x_machine/_form.html.twig', {'button_label': 'Create'}) }}
+
+            <div class="flex justify-start mt-4 mb-4">
+                <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_x_machine_index') }}">Back to list</a>
+            </div>
+        </div>
+    </main>
+{% endblock %}

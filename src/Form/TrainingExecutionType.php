@@ -2,22 +2,23 @@
 
 namespace App\Form;
 
-use App\Entity\Person;
-use App\Entity\TrainingPlan;
+use App\Entity\TrainingExecution;
+use App\Entity\TrainingPlanXMachine;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrainingPlanType extends AbstractType
+class TrainingExecutionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('person_id', EntityType::class, [
-                'class' => Person::class,
-'choice_label' => 'name',
+            ->add('date')
+            ->add('completed')
+            ->add('training_plan_x_machine_id', EntityType::class, [
+                'class' => TrainingPlanXMachine::class,
+'choice_label' => 'id',
             ])
         ;
     }
@@ -25,7 +26,7 @@ class TrainingPlanType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => TrainingPlan::class,
+            'data_class' => TrainingExecution::class,
         ]);
     }
 }

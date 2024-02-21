@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Management | Training Plan{% endblock %}
+{% block title %}Management | Training Plan X Machine{% endblock %}
 
 {% block body %}
     <main class="pt-20 px-8">
-        <h1 class="text-3xl font-bold mb-4 text-center">Training Plans</h1>
+        <h1 class="text-3xl font-bold mb-4 text-center">Training Plan X Machine Index</h1>
 
         <!-- Search Bar -->
         <div class="mb-4">
@@ -16,23 +16,27 @@
                 <thead>
                     <tr class="bg-gray-200 text-center">
                         <th class="px-4 py-2">Id</th>
-                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Weight</th>
+                        <th class="px-4 py-2">Intervals</th>
+                        <th class="px-4 py-2">Repetitions</th>
                         <th class="px-4 py-2">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="trainingPlanTableBody">
-                {% for training_plan in training_plans %}
+                <tbody id="trainingPlanXMachineTableBody">
+                {% for training_plan_x_machine in training_plan_x_machines %}
                     <tr class="text-center hover:bg-gray-100 cursor-pointer">
-                        <td class="border px-4 py-2">{{ training_plan.id }}</td>
-                        <td class="border px-4 py-2">{{ training_plan.name }}</td>
+                        <td class="border px-4 py-2">{{ training_plan_x_machine.id }}</td>
+                        <td class="border px-4 py-2">{{ training_plan_x_machine.weight }}</td>
+                        <td class="border px-4 py-2">{{ training_plan_x_machine.intervals }}</td>
+                        <td class="border px-4 py-2">{{ training_plan_x_machine.repetitions }}</td>
                         <td class="border px-4 py-2">
-                            <a class="button is-small is-link" href="{{ path('app_training_plan_show', {'id': training_plan.id}) }}">View Details</a>
-                            <a class="button is-small is-primary" href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">Edit Plan</a>
+                            <a class="button is-small is-link" href="{{ path('app_training_plan_x_machine_show', {'id': training_plan_x_machine.id}) }}">View Details</a>
+                            <a class="button is-small is-primary" href="{{ path('app_training_plan_x_machine_edit', {'id': training_plan_x_machine.id}) }}">Edit Plan</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="3" class="border px-4 py-2 text-center">No records found</td>
+                        <td colspan="5" class="border px-4 py-2 text-center">No records found</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -40,14 +44,14 @@
         </div>
 
         <div class="flex justify-center mt-4 mb-4">
-            <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_new') }}">Add New Training Plan</a>
+            <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_x_machine_new') }}">Add New Training Plan X Machine</a>
         </div>
     </main>
 
     <script>
         // Search functionality
         const searchInput = document.getElementById('searchInput');
-        const tableBody = document.getElementById('trainingPlanTableBody');
+        const tableBody = document.getElementById('trainingPlanXMachineTableBody');
 
         searchInput.addEventListener('keyup', function() {
             const query = searchInput.value.toLowerCase();

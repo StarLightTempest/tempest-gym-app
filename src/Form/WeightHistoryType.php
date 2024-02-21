@@ -3,18 +3,19 @@
 namespace App\Form;
 
 use App\Entity\Person;
-use App\Entity\TrainingPlan;
+use App\Entity\WeightHistory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrainingPlanType extends AbstractType
+class WeightHistoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
+            ->add('date')
+            ->add('weight')
             ->add('person_id', EntityType::class, [
                 'class' => Person::class,
 'choice_label' => 'name',
@@ -25,7 +26,7 @@ class TrainingPlanType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => TrainingPlan::class,
+            'data_class' => WeightHistory::class,
         ]);
     }
 }

@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Management | Person{% endblock %}
+{% block title %}Management | Training Execution{% endblock %}
 
 {% block body %}
     <main class="pt-20 px-8">
-        <h1 class="text-3xl font-bold mb-4 text-center">Person Index</h1>
+        <h1 class="text-3xl font-bold mb-4 text-center">Training Execution Index</h1>
 
         <!-- Search Bar -->
         <div class="mb-4">
-            <input class="w-full px-3 py-2 border rounded" type="text" placeholder="Search people..." id="searchInput">
+            <input class="w-full px-3 py-2 border rounded" type="text" placeholder="Search training executions..." id="searchInput">
         </div>
 
         <div class="table-container w-4/5 mx-auto">
@@ -16,20 +16,20 @@
                 <thead>
                     <tr class="bg-gray-200 text-center">
                         <th class="px-4 py-2">Id</th>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Height</th>
+                        <th class="px-4 py-2">Date</th>
+                        <th class="px-4 py-2">Completed</th>
                         <th class="px-4 py-2">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="personTableBody">
-                {% for person in people %}
+                <tbody id="trainingExecutionTableBody">
+                {% for training_execution in training_executions %}
                     <tr class="text-center hover:bg-gray-100 cursor-pointer">
-                        <td class="border px-4 py-2">{{ person.id }}</td>
-                        <td class="border px-4 py-2">{{ person.name }}</td>
-                        <td class="border px-4 py-2">{{ person.height }}</td>
+                        <td class="border px-4 py-2">{{ training_execution.id }}</td>
+                        <td class="border px-4 py-2">{{ training_execution.date ? training_execution.date|date('Y-m-d') : '' }}</td>
+                        <td class="border px-4 py-2">{{ training_execution.completed ? 'Yes' : 'No' }}</td>
                         <td class="border px-4 py-2">
-                            <a class="button is-small is-link" href="{{ path('app_person_show', {'id': person.id}) }}">View Details</a>
-                            <a class="button is-small is-primary" href="{{ path('app_person_edit', {'id': person.id}) }}">Edit Person</a>
+                            <a class="button is-small is-link" href="{{ path('app_training_execution_show', {'id': training_execution.id}) }}">View Details</a>
+                            <a class="button is-small is-primary" href="{{ path('app_training_execution_edit', {'id': training_execution.id}) }}">Edit Execution</a>
                         </td>
                     </tr>
                 {% else %}
@@ -42,14 +42,14 @@
         </div>
 
         <div class="flex justify-center mt-4 mb-4">
-            <a class="button is-link px-4 py-2" href="{{ path('app_person_new') }}">Add New Person</a>
+            <a class="button is-link px-4 py-2" href="{{ path('app_training_execution_new') }}">Add New Training Execution</a>
         </div>
     </main>
 
     <script>
         // Search functionality
         const searchInput = document.getElementById('searchInput');
-        const tableBody = document.getElementById('personTableBody');
+        const tableBody = document.getElementById('trainingExecutionTableBody');
 
         searchInput.addEventListener('keyup', function() {
             const query = searchInput.value.toLowerCase();
