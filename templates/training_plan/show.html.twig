@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Training Plan{% endblock %}
+{% block title %}TrainingPlan{% endblock %}
 
 {% block body %}
     <main class="pt-20">
@@ -16,6 +16,14 @@
                     <tr class="text-center">
                         <th class="px-4 py-2">Name</th>
                         <td class="border px-4 py-2">{{ training_plan.name }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <th class="px-4 py-2">Description</th>
+                        <td class="border px-4 py-2">{{ training_plan.description }}</td>
+                    </tr>
+                    <tr class="text-center">
+                        <th class="px-4 py-2">Weekday</th>
+                        <td class="border px-4 py-2">{{ training_plan.weekday }}</td>
                     </tr>
                 </tbody>
             </table>
