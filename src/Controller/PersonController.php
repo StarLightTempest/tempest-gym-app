@@ -45,10 +45,19 @@ class PersonController extends AbstractController
     #[Route('/{id}', name: 'app_person_show', methods: ['GET'])]
     public function show(Person $person): Response
     {
+        // Fetch the related TrainingPlans
+        $trainingPlans = $person->getTrainingPlans();
+
+        // Fetch the related WeightHistories
+        $weightHistories = $person->getWeightHistories();
+
         return $this->render('person/show.html.twig', [
             'person' => $person,
+            'trainingPlans' => $trainingPlans,
+            'weightHistories' => $weightHistories,
         ]);
     }
+    
 
     #[Route('/{id}/edit', name: 'app_person_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Person $person, EntityManagerInterface $entityManager): Response

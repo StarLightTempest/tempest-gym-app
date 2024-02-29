@@ -15,6 +15,8 @@ class TrainingPlanType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('description')
+            ->add('weekday')
             ->add('person_id', EntityType::class, [
                 'class' => Person::class,
 'choice_label' => 'name',

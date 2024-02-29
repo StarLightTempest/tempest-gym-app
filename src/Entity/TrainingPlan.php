@@ -24,6 +24,12 @@ class TrainingPlan
     #[ORM\ManyToOne(inversedBy: 'trainingPlans')]
     private ?Person $person_id = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $weekday = null;
+
 
 
     public function getId(): ?int
@@ -81,6 +87,30 @@ class TrainingPlan
     public function setPersonId(?Person $person_id): static
     {
         $this->person_id = $person_id;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $Description): static
+    {
+        $this->description = $Description;
+
+        return $this;
+    }
+
+    public function getWeekday(): ?string
+    {
+        return $this->weekday;
+    }
+
+    public function setWeekday(?string $Weekday): static
+    {
+        $this->weekday = $Weekday;
 
         return $this;
     }
