@@ -67,8 +67,8 @@
                                 <a class="button is-light" href="/login">
                                     Log in
                                 </a>
-                                <a class="button is-light" href="/logout">
-                                    Log out
+                                <a class="button is-light" href="/register">
+                                    Register
                                 </a>
                             </div>
                         </div>
@@ -102,5 +102,11 @@
                 </div>
             </footer>
         {% endblock %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
     </body>
 </html>
