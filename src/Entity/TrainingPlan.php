@@ -21,14 +21,14 @@ class TrainingPlan
     #[ORM\OneToMany(targetEntity: TrainingPlanXMachine::class, mappedBy: 'training_plan_id')]
     private Collection $trainingPlanXMachines;
 
-    #[ORM\ManyToOne(inversedBy: 'trainingPlans')]
-    private ?Person $person_id = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $weekday = null;
+
+    #[ORM\ManyToOne(inversedBy: 'trainingPlans')]
+    private ?User $user_id = null;
 
 
 
@@ -79,18 +79,6 @@ class TrainingPlan
         return $this;
     }
 
-    public function getPersonId(): ?Person
-    {
-        return $this->person_id;
-    }
-
-    public function setPersonId(?Person $person_id): static
-    {
-        $this->person_id = $person_id;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -111,6 +99,18 @@ class TrainingPlan
     public function setWeekday(?string $Weekday): static
     {
         $this->weekday = $Weekday;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): static
+    {
+        $this->user_id = $user_id;
 
         return $this;
     }

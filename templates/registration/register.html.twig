@@ -3,21 +3,58 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+    <section class="section">
+        <div class="container mx-auto px-4 sm:px-8">
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger">{{ flash_error }}</div>
+            {% endfor %}
 
-    <h1>Register</h1>
+            <h1 class="text-4xl font-bold mb-4">Register</h1>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'box bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'}}) }}
+                <div class="mb-4">
+                    {{ form_label(registrationForm.name, 'Name', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                    {{ form_widget(registrationForm.name, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', 'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.name) }}
+                </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <div class="mb-4">
+                    {{ form_label(registrationForm.height, 'Height', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                    {{ form_widget(registrationForm.height, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', 'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.height) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', 'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', 'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
+                </div>
+
+                <div class="mb-4 flex items-center">
+                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2', 'required': 'required'}}) }}
+                    {{ form_label(registrationForm.agreeTerms, 'Agree to terms', {'label_attr': {'class': 'text-sm text-gray-700'}}) }}
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                </div>
+
+                <div class="flex items-center justify-center mb-4">
+                    <button type="submit" class="button is-link">
+                        Register
+                    </button>
+                </div>
+                <div class="text-center">
+                    <p class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+                        Already have an account? <a href="{{ path('app_login') }}">Login</a>
+                    </p>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </section>
 {% endblock %}

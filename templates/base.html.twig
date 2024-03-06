@@ -9,73 +9,116 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+            <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
         {% endblock %}
 
         {% block javascripts %}
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         {% endblock %}
     </head>
     <body>
-        {% block header %}
-            <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-                <div class="navbar-brand">
-                    <a class="navbar-item" href="/">
-                        <img class="h-8 w-auto" src="{{ asset('images/tempest-logo.png') }}" alt="Logo">
+       {% block header %}
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img class="h-8 w-auto" src="{{ asset('images/tempest-logo.png') }}" alt="Logo">
+        </a>
+
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item flex items-center" href="/">
+                <i class="fas fa-home mr-2"></i>Homepage
+            </a>
+
+            {% if app.user %}
+            <a class="navbar-item flex items-center" href="/user-dashboard">
+                <i class="fas fa-tachometer-alt mr-2"></i>My Dashboard
+            </a>
+
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Management
                     </a>
-                </div>
 
-                <div id="navbarBasicExample" class="navbar-menu">
-                    <div class="navbar-start">
-                        <a class="navbar-item flex items-center" href="/">
-                            <i class="fas fa-home mr-2"></i>  Homepage
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" href="/user">
+                            <i class="fas fa-users mr-2"></i> Users
                         </a>
-
-                        <div class="navbar-item has-dropdown is-hoverable">
-                            <a class="navbar-link">
-                                Management
-                            </a>
-
-                            <div class="navbar-dropdown">
-                                <a class="navbar-item" href="/person">
-                                    Persons
-                                </a>
-                                <a class="navbar-item" href="/training-plan">
-                                    Training Plan
-                                </a>
-                                <a class="navbar-item" href="/machines">
-                                    Machines
-                                </a>
-                                <a class="navbar-item" href="/training-plan-x-machine">
-                                    Training Plan X Machine
-                                </a>
-                                <a class="navbar-item" href="/training-execution">
-                                    Training Execution
-                                </a>
-                                <a class="navbar-item" href="/weight-history">
-                                    Weight History
-                                </a>
-                            </div>
-                        </div>
-
-                        <a class="navbar-item" href="/help">
-                            <i class="fas fa-question-circle mr-2"></i> Help
+                        <a class="navbar-item" href="/training-plan">
+                            <i class="fas fa-calendar-alt mr-2"></i> Training Plan
+                        </a>
+                        <a class="navbar-item" href="/machines">
+                            <i class="fas fa-cogs mr-2"></i> Machines
+                        </a>
+                        <a class="navbar-item" href="/training-plan-x-machine">
+                            <i class="fas fa-dumbbell mr-2"></i> Training Plan X Machine
+                        </a>
+                        <a class="navbar-item" href="/training-execution">
+                            <i class="fas fa-running mr-2"></i> Training Execution
+                        </a>
+                        <a class="navbar-item" href="/weight-history">
+                            <i class="fas fa-weight mr-2"></i> Weight History
                         </a>
                     </div>
-
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-light" href="/login">
-                                    Log in
-                                </a>
-                                <a class="button is-light" href="/register">
-                                    Register
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </nav>
-        {% endblock %}
+            {% endif %}
+            {% endif %}
+
+            <a class="navbar-item" href="/help">
+                <i class="fas fa-question-circle mr-2"></i>Help
+            </a>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if app.user %}
+                    <a class="button is-light" href="{{ path('app_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </a>
+                    {% else %}
+                    <a class="button is-light" href="/login">
+                        <i class="fas fa-sign-in-alt"></i>Log in
+                    </a>
+                    <a class="button is-light" href="/register">
+                        <i class="fas fa-user-plus"></i>Register
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const $navbarBurger = document.querySelector('.navbar-burger');
+        const $navbarMenu = document.getElementById('navbarBasicExample');
+
+        // Toggle the visibility of the navbar menu when the hamburger icon is clicked
+        $navbarBurger.addEventListener('click', () => {
+            $navbarBurger.classList.toggle('is-active');
+            $navbarMenu.classList.toggle('is-active');
+        });
+
+    });
+</script>
+{% endblock %}
+
+
+
+
+
+
 
         {% block body %}
 

@@ -33,7 +33,15 @@ class TrainingExecutionController extends AbstractController
             $entityManager->persist($trainingExecution);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_training_execution_index', [], Response::HTTP_SEE_OTHER);
+            $trainingPlanXMachine = $trainingExecution->getTrainingPlanXMachineId();
+            if ($trainingPlanXMachine) {
+                $trainingPlan = $trainingPlanXMachine->getTrainingPlanId();
+                if ($trainingPlan) {
+                    return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlan->getId()]);
+                }
+            }
+
+            return $this->redirectToRoute('app_training_execution_index');
         }
 
         return $this->render('training_execution/new.html.twig', [
@@ -59,7 +67,15 @@ class TrainingExecutionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_training_execution_index', [], Response::HTTP_SEE_OTHER);
+            $trainingPlanXMachine = $trainingExecution->getTrainingPlanXMachineId();
+            if ($trainingPlanXMachine) {
+                $trainingPlan = $trainingPlanXMachine->getTrainingPlanId();
+                if ($trainingPlan) {
+                    return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlan->getId()]);
+                }
+            }
+
+            return $this->redirectToRoute('app_training_execution_index');
         }
 
         return $this->render('training_execution/edit.html.twig', [

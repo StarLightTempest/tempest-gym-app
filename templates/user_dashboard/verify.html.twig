@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email Verification{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="box">
+        <h1 class="title is-2 has-text-centered">Email Verification</h1>
+        <p class="block text-gray-700 mb-4 text-center">
+            We've sent a verification link to your email address. Please check your inbox and click the link to verify your email.
+        </p>
+        <p class="block text-gray-700 text-center">
+            If you didn't receive the email, please check your spam folder or <a href="#" class="text-blue-500 underline">request a new verification link</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}

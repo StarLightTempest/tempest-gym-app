@@ -29,7 +29,14 @@
             </table>
 
             <div class="flex justify-between mt-4 mb-4">
-                <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_x_machine_index') }}">Back to list</a>
+                <div class="flex justify-between">
+                <a href="javascript:history.back()" class="button is-info px-4 py-2">
+                    <span class="icon">
+                        <i class="fas fa-arrow-left"></i>
+                    </span>
+                    <span>Back</span>
+                </a>
+            </div>
                 <a class="button is-success px-4 py-2" href="{{ path('app_training_plan_x_machine_edit', {'id': training_plan_x_machine.id}) }}">Edit</a>
                 {{ include('training_plan_x_machine/_delete_form.html.twig') }}
             </div>

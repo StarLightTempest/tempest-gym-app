@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\PersonRepository;
+use App\Repository\UserRepository;
 use App\Repository\MachinesRepository;
 use App\Repository\TrainingPlanRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,15 +13,15 @@ class HomepageController extends AbstractController
 {
     #[Route('/homepage', name: 'app_homepage')]
     #[Route('/', name: 'app_root')]
-    public function index(PersonRepository $personRepository, MachinesRepository $machineRepository, TrainingPlanRepository $trainingPlanRepository): Response
+    public function index(UserRepository $userRepository, MachinesRepository $machineRepository, TrainingPlanRepository $trainingPlanRepository): Response
     {
-        $persons = $personRepository->findAll();
+        $users = $userRepository->findAll();
         $machines = $machineRepository->findAll();
         $trainingPlans = $trainingPlanRepository->findAll();
 
         return $this->render('homepage/index.html.twig', [
             'controller_name' => 'HomepageController',
-            'persons' => $persons,
+            'users' => $users,
             'machines' => $machines,
             'trainingPlans' => $trainingPlans,
         ]);

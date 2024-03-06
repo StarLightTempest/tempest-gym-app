@@ -5,21 +5,21 @@
 <div class="container mx-auto px-4 bg-white bg-opacity-75 rounded-lg p-6">
     <!-- Section 1.1: Topic -->
     <section class="my-8">
-        <h1 class="text-4xl font-bold text-center text-blue-500">Welcome to Our Tempest Gym App</h1>
+        <h1 class="text-4xl font-bold text-center text-blue-500">Welcome to Our Tempest Gym App!</h1>
         <p class="text-lg text-center mt-4">Join us and start your journey to a healthier lifestyle. Track your progress, manage your training plans and stay motivated!</p>
     </section>
 
-    <!-- Section 2: List all Persons from Database -->
+    <!-- Section 2: List all Users from Database -->
     <section class="my-8">
-        <h2 class="text-2xl font-bold mb-4 text-blue-500">Persons</h2>
+        <h2 class="text-2xl font-bold mb-4 text-blue-500">Users</h2>
         <ul class="space-y-4">
-            {% for person in persons %}
+            {% for user in users %}
                 <li class="p-4 border rounded shadow bg-white">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold">{{ person.name }}</h3>
+                        <h3 class="text-xl font-bold">{{ user.name }}</h3>
                         <div class="flex space-x-2">
-                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_person_edit', {'id': person.id}) }}">Edit</a>
-                            {{ include('person/_delete_form.html.twig') }}
+                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_user_edit', {'id': user.id}) }}">Edit</a>
+                            {{ include('user/_delete_form.html.twig') }}
                         </div>
                     </div>
                 </li>

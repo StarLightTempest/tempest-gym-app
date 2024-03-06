@@ -21,7 +21,7 @@ class WeightHistory
     private ?int $weight = null;
 
     #[ORM\ManyToOne(inversedBy: 'weightHistories')]
-    private ?Person $person_id = null;
+    private ?User $user_id = null;
 
     public function getId(): ?int
     {
@@ -52,14 +52,14 @@ class WeightHistory
         return $this;
     }
 
-    public function getPersonId(): ?Person
+    public function getUserId(): ?User 
     {
-        return $this->person_id;
+        return $this->user_id;
     }
 
-    public function setPersonId(?Person $person_id): static
+    public function setUserId(?User $user_id): static 
     {
-        $this->person_id = $person_id;
+        $this->user_id = $user_id;
 
         return $this;
     }

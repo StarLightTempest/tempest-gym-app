@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/training-plan')]
 class TrainingPlanController extends AbstractController
@@ -17,8 +18,10 @@ class TrainingPlanController extends AbstractController
     #[Route('/', name: 'app_training_plan_index', methods: ['GET'])]
     public function index(TrainingPlanRepository $trainingPlanRepository): Response
     {
+        $trainingPlans = $trainingPlanRepository->findBy(['user_id' => $this->getUser()]);
+
         return $this->render('training_plan/index.html.twig', [
-            'training_plans' => $trainingPlanRepository->findAll(),
+            'training_plans' => $trainingPlans,
         ]);
     }
 
@@ -26,6 +29,8 @@ class TrainingPlanController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $trainingPlan = new TrainingPlan();
+        $trainingPlan->setUserId($this->getUser());
+
         $form = $this->createForm(TrainingPlanType::class, $trainingPlan);
         $form->handleRequest($request);
 
@@ -33,7 +38,7 @@ class TrainingPlanController extends AbstractController
             $entityManager->persist($trainingPlan);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_training_plan_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', ['id' => $trainingPlan->getUserId()->getId()]);
         }
 
         return $this->render('training_plan/new.html.twig', [
@@ -43,23 +48,36 @@ class TrainingPlanController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_training_plan_show', methods: ['GET'])]
-    public function show(TrainingPlan $trainingPlan): Response
+    public function show(TrainingPlan $trainingPlan, ?int $userId = null): Response
     {
+        if ($trainingPlan->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your training plan!');
+        }
+
+        // Fetch the related TrainingPlanXMachines, Machines, and TrainingExecutions
+        $trainingPlanXMachines = $trainingPlan->getTrainingPlanXMachines();
+
         return $this->render('training_plan/show.html.twig', [
             'training_plan' => $trainingPlan,
+            'trainingPlanXMachines' => $trainingPlanXMachines,
+            'user_id' => $userId,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_training_plan_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TrainingPlan $trainingPlan, EntityManagerInterface $entityManager): Response
     {
+        if ($trainingPlan->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your training plan!');
+        }
+
         $form = $this->createForm(TrainingPlanType::class, $trainingPlan);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_training_plan_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', ['id' => $trainingPlan->getUserId()->getId()]);
         }
 
         return $this->render('training_plan/edit.html.twig', [
@@ -71,9 +89,15 @@ class TrainingPlanController extends AbstractController
     #[Route('/{id}', name: 'app_training_plan_delete', methods: ['POST'])]
     public function delete(Request $request, TrainingPlan $trainingPlan, EntityManagerInterface $entityManager): Response
     {
+        if ($trainingPlan->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('You do not have permission to delete this training plan!');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$trainingPlan->getId(), $request->request->get('_token'))) {
             $entityManager->remove($trainingPlan);
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_show', ['id' => $trainingPlan->getUserId()->getId()]);
         }
 
         return $this->redirectToRoute('app_training_plan_index', [], Response::HTTP_SEE_OTHER);

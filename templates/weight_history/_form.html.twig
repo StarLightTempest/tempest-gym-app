@@ -11,12 +11,14 @@
         </label>
         {{ form_widget(form.weight, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
     </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="person_id">
-            {{ form_label(form.person_id) }}
-        </label>
-        {{ form_widget(form.person_id, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
-    </div>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="user_id">
+                {{ form_label(form.user_id) }}
+            </label>
+            {{ form_widget(form.user_id, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        </div>
+    {% endif %}
 
     <button class="button is-success">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -15,6 +15,8 @@ class MachinesType extends AbstractType
             ->add('name')
             ->add('max_capacity')
             ->add('weight_increment')
+            ->add('Picture_URL')
+            ->add('Description')
         ;
     }
 

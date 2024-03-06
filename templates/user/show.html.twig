@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Profile: {{ user.name }}{% endblock %}
+
+{% block body %}
+<main class="pt-20 bg-gray-100 min-h-screen pb-16 px-8">
+    <section class="mb-8 text-center">
+        <h1 class="text-3xl font-bold mb-4">User Profile: {{ user.name }}</h1>
+        <p class="text-lg text-gray-700 mb-8">This page displays details about the user including their ID, name, and height.</p>
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full sm:w-1/2 lg:w-1/3 px-4 mb-4">
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">ID</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ user.id }}</dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Name</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ user.name }}</dd>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500">Height</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ user.height }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="flex justify-center mb-8">
+        <a class="button is-success px-4 py-2 mr-2" href="{{ path('app_user_edit', {'id': user.id}) }}">
+            <span class="icon">
+                <i class="fas fa-edit"></i>
+            </span>
+            <span>Edit</span>
+        </a>
+    </section>
+
+    <h2 class="text-2xl font-bold mb-4 mt-8 text-center">Related Training Plans</h2>
+    <div class="flex justify-between mb-4">
+        <a class="button is-primary px-4 py-2" href="{{ path('app_training_plan_new', {'userId': user.id}) }}">
+            <span class="icon">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>Add Training Plan</span>
+        </a>
+    </div>
+    <section class="box bg-white shadow-md rounded pt-6 pb-8 mb-4 relative ">
+        {% if user.trainingPlans is not empty %}
+            <div class="swiper-container training-plans-swiper">
+                <div class="swiper-wrapper">
+                    {% for trainingPlan in user.trainingPlans %}
+                        <div class="swiper-slide">
+                            <div class="w-80 border rounded-lg overflow-hidden shadow-md m-2 mx-auto">
+                                <div class="flex justify-center items-center bg-blue-500 text-white h-32">
+                                    <i class="fas fa-dumbbell text-4xl"></i>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <h3 class="text-xl font-bold">{{ trainingPlan.name }}</h3>
+                                    <p class="mt-2">{{ trainingPlan.description }}</p>
+                                    <p class="mt-2 mb-2">{{ trainingPlan.weekday }}</p>
+                                    <a class="button is-link is-small" href="{{ path('app_training_plan_show', {'id': trainingPlan.id, 'user_id': user.id}) }}">
+                                        <span class="icon">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                        <span>View</span>
+                                    </a>
+                                    <a class="button is-info is-small" href="{{ path('app_training_plan_edit', {'id': trainingPlan.id}) }}">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>Edit</span>
+                                    </a>
+                                    <form method="post" action="{{ path('app_training_plan_delete', {'id': trainingPlan.id}) }}" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trainingPlan.id) }}">
+                                        <button class="button is-danger is-small">
+                                            <span class="icon">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </span>
+                                            <span>Delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                <!-- Add Navigation -->
+                <div class="training-plans-swiper-button-next swiper-button-next top-0 right-0 mt-10 mr-1"></div>
+                <div class="training-plans-swiper-button-prev swiper-button-prev top-0 left-0 mt-10 ml-1"></div>
+            </div>
+        {% else %}
+            <p class="text-center">No related training plans.</p>
+        {% endif %}
+    </section>
+
+    <h2 class="text-2xl font-bold mb-4 mt-8 text-center">Related Weight Histories</h2>
+    <div class="flex justify-between mb-4">
+        <a class="button is-primary px-4 py-2" href="{{ path('app_weight_history_new', {'userId': user.id}) }}">
+            <span class="icon">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>Add Weight History</span>
+        </a>
+    </div>
+    <section class="box bg-white shadow-md rounded pt-6 pb-8 mb-4 relative">
+        {% if user.weightHistories is not empty %}
+            <div class="swiper-container weight-histories-swiper">
+                <div class="swiper-wrapper">
+                    {% for weightHistory in user.weightHistories %}
+                        <div class="swiper-slide">
+                            <div class="w-80 border rounded-lg overflow-hidden shadow-md m-2 mx-auto">
+                                <div class="flex justify-center items-center bg-blue-500 text-white h-32">
+                                    <i class="fas fa-weight text-4xl"></i>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <h3 class="text-xl font-bold">{{ weightHistory.date ? weightHistory.date|date('Y-m-d') : '' }}</h3>
+                                    <p class="mt-2 mb-2">{{ weightHistory.weight }} kg</p>
+                                    <a class="button is-info is-small" href="{{ path('app_weight_history_edit', {'id': weightHistory.id}) }}">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>Edit</span>
+                                    </a>
+                                    <form method="post" action="{{ path('app_weight_history_delete', {'id': weightHistory.id}) }}" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ weightHistory.id) }}">
+                                        <button class="button is-danger is-small">
+                                            <span class="icon">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </span>
+                                            <span>Delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                <!-- Add Navigation -->
+                <div class="weight-histories-swiper-button-next swiper-button-next top-0 right-0 mt-10 mr-1"></div>
+                <div class="weight-histories-swiper-button-prev swiper-button-prev top-0 left-0 mt-10 ml-1"></div>
+            </div>
+        {% else %}
+            <p class="text-center">No related weight histories.</p>
+        {% endif %}
+    </section>
+    
+    <div class="flex justify-between">
+        <a href="javascript:history.back()" class="button is-info px-4 py-2">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back</span>
+        </a>
+    </div>
+</main>
+
+<!-- Initialize Swiper -->
+<script>
+  var trainingPlansSwiper = new Swiper('.training-plans-swiper', {
+    slidesPerView: 'auto',
+    spaceBetween: 10,
+    navigation: {
+      nextEl: '.training-plans-swiper-button-next',
+      prevEl: '.training-plans-swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 40,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 50,
+      },
+    }
+  });
+
+  var weightHistoriesSwiper = new Swiper('.weight-histories-swiper', {
+    slidesPerView: 'auto',
+    spaceBetween: 10,
+    navigation: {
+      nextEl: '.weight-histories-swiper-button-next',
+      prevEl: '.weight-histories-swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 40,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 50,
+      },
+    }
+  });
+</script>
+{% endblock %}

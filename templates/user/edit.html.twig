@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Machines{% endblock %}
+{% block title %}Edit User{% endblock %}
 
 {% block body %}
     <main class="pt-20">
         <div class="table-container w-4/5 mx-auto">
-            <h1 class="text-3xl font-bold mb-4 text-center">Edit Machines</h1>
+            <h1 class="text-3xl font-bold mb-4 text-center">Edit User</h1>
 
-            {{ include('machines/_form.html.twig',) }}
-            
-           <div class="flex justify-between mt-4 mb-4">
+            {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+
+            <div class="flex justify-between mt-4 mb-4">
                 <div class="flex justify-between">
                     <a href="javascript:history.back()" class="button is-info px-4 py-2">
                         <span class="icon">
@@ -19,7 +19,7 @@
                     </a>
                 </div>
                 <div>
-                    {{ include('machines/_delete_form.html.twig') }}
+                    {{ include('user/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>

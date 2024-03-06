@@ -1,38 +1,152 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TrainingPlan{% endblock %}
+{% block title %}Training Plan: {{ training_plan.name }}{% endblock %}
 
 {% block body %}
-    <main class="pt-20">
-        <div class="table-container w-4/5 mx-auto">
-            <h1 class="text-3xl font-bold mb-4 text-center">TrainingPlan</h1>
-
-            <table class="table is-fullwidth">
-                <tbody>
-                    <tr class="text-center">
-                        <th class="px-4 py-2">Id</th>
-                        <td class="border px-4 py-2">{{ training_plan.id }}</td>
-                    </tr>
-                    <tr class="text-center">
-                        <th class="px-4 py-2">Name</th>
-                        <td class="border px-4 py-2">{{ training_plan.name }}</td>
-                    </tr>
-                    <tr class="text-center">
-                        <th class="px-4 py-2">Description</th>
-                        <td class="border px-4 py-2">{{ training_plan.description }}</td>
-                    </tr>
-                    <tr class="text-center">
-                        <th class="px-4 py-2">Weekday</th>
-                        <td class="border px-4 py-2">{{ training_plan.weekday }}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="flex justify-between mt-4 mb-4">
-                <a class="button is-link px-4 py-2" href="{{ path('app_training_plan_index') }}">Back to list</a>
-                <a class="button is-success px-4 py-2" href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">Edit</a>
-                {{ include('training_plan/_delete_form.html.twig') }}
+<main class="pt-20 bg-gray-100 min-h-screen pb-16 px-8">
+    <section class="mb-8 text-center">
+        <h1 class="text-3xl font-bold mb-4">Training Plan: {{ training_plan.name }}</h1>
+        <p class="text-lg text-gray-700 mb-8">This page displays details about the training plan including its ID, name, description, and weekday.</p>
+        <div class="flex flex-wrap justify-center">
+            <div class="w-full sm:w-1/2 lg:w-1/3 px-4 mb-4">
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">ID</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ training_plan.id }}</dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Name</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ training_plan.name }}</dd>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500">Description</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ training_plan.description }}</dd>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500">Weekday</dt>
+                                <dd class="mt-1 text-lg text-gray-900">{{ training_plan.weekday }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+    </section>
+
+    <section class="flex justify-center mb-8">
+        <a class="button is-success px-4 py-2 mr-2" href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">
+            <span class="icon">
+                <i class="fas fa-edit"></i>
+            </span>
+            <span>Edit</span>
+        </a>
+        {{ include('training_plan/_delete_form.html.twig') }}
+    </section>
+
+    <h2 class="text-2xl font-bold mb-4 mt-8 text-center">Related TrainingPlanXMachines</h2>
+    <div class="flex justify-between mb-4">
+        <a class="button is-primary px-4 py-2" href="{{ path('app_training_plan_x_machine_new', {'trainingPlanId': training_plan.id}) }}">
+            <span class="icon">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>Add TrainingPlanXMachine</span>
+        </a>
+    </div>
+    <section class="box bg-white shadow-md rounded pt-6 pb-8 mb-4 relative">
+        {% if training_plan.trainingPlanXMachines is not empty %}
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    {% for trainingPlanXMachine in training_plan.trainingPlanXMachines %}
+                        <div class="swiper-slide">
+                            <div class="w-80 border rounded-lg overflow-hidden shadow-md m-2 mx-auto">
+                                <div class="flex justify-center items-center bg-blue-500 text-white h-32">
+                                    <i class="fas fa-dumbbell text-4xl"></i>
+                                </div>
+                                <div class="p-4 text-center">
+                                    <h3 class="text-xl font-bold">{{ trainingPlanXMachine.machineId.name }}</h3>
+                                    <p>Weight: {{ trainingPlanXMachine.weight }}</p>
+                                    <p>Intervals: {{ trainingPlanXMachine.intervals }}</p>
+                                    <p>Repetitions: {{ trainingPlanXMachine.repetitions }}</p>
+                                    {% for trainingExecution in trainingPlanXMachine.trainingExecutions %}
+                                        <p class="mt-4 flex items-center">
+                                            <span>Training Execution on {{ trainingExecution.date|date('Y-m-d') }}: </span>
+                                            {% if trainingExecution.completed %}
+                                                <i class="fas fa-check-circle text-green-500 ml-2"></i><span class="ml-1">Completed</span>
+                                            {% else %}
+                                                <i class="fas fa-times-circle text-red-500 ml-2"></i><span class="ml-1">Not Completed</span>
+                                            {% endif %}
+                                        </p>
+                                    {% endfor %}
+                                    <div class="mt-4">
+                                        <a class="button is-warning is-small mr-2" href="{{ path('app_training_plan_x_machine_edit', {'id': trainingPlanXMachine.id}) }}">
+                                            <span class="icon">
+                                                <i class="fas fa-edit"></i>
+                                            </span>
+                                            <span>Edit</span>
+                                        </a>
+                                        <a class="button is-danger is-small mr-2" href="{{ path('app_training_plan_x_machine_delete', {'id': trainingPlanXMachine.id}) }}">
+                                            <span class="icon">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                            <span>Delete</span>
+                                        </a>
+                                        <a class="button is-primary is-small" href="{{ path('app_training_execution_new', {'trainingPlanXMachineId': trainingPlanXMachine.id}) }}">
+                                            <span class="icon">
+                                                <i class="fas fa-plus"></i>
+                                            </span>
+                                            <span>Add Training Execution</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        {% else %}
+            <p class="text-center">No related TrainingPlanXMachines.</p>
+        {% endif %}
+    </section>
+
+    <div class="flex justify-between">
+        <a class="button is-info px-4 py-2" href="javascript:history.back()">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back</span>
+        </a>
+    </div>
+</main>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        breakpoints: {
+            640: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+            },
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 40,
+            },
+            1024: {
+                slidesPerView: 3,
+                spaceBetween: 50,
+            },
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+</script>
 {% endblock %}

@@ -2,25 +2,35 @@
 
 namespace App\Form;
 
-use App\Entity\Person;
+use App\Entity\User;
 use App\Entity\WeightHistory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class WeightHistoryType extends AbstractType
 {
+    private $authorizationChecker;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('date')
-            ->add('weight')
-            ->add('person_id', EntityType::class, [
-                'class' => Person::class,
-'choice_label' => 'name',
-            ])
-        ;
+            ->add('weight');
+
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            $builder->add('user_id', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'name',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -27,6 +27,12 @@ class Machines
     #[ORM\OneToMany(targetEntity: TrainingPlanXMachine::class, mappedBy: 'machine_id')]
     private Collection $trainingPlanXMachines;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Picture_URL = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Description = null;
+
     public function __construct()
     {
         $this->trainingPlanXMachines = new ArrayCollection();
@@ -99,6 +105,30 @@ class Machines
                 $trainingPlanXMachine->setMachineId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPictureURL(): ?string
+    {
+        return $this->Picture_URL;
+    }
+
+    public function setPictureURL(?string $Picture_URL): static
+    {
+        $this->Picture_URL = $Picture_URL;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): static
+    {
+        $this->Description = $Description;
 
         return $this;
     }

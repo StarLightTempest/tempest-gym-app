@@ -3,62 +3,102 @@
 {% block title %}Management | Machines{% endblock %}
 
 {% block body %}
-    <main class="pt-20 px-8">
-        <h1 class="text-3xl font-bold mb-4 text-center">Machines index</h1>
+<main class="pt-20 bg-gray-100 min-h-screen pb-16 px-8">
+    <h1 class="text-3xl font-bold mb-4 text-center">Machines index</h1>
 
-        <!-- Search Bar -->
-        <div class="mb-4">
-            <input class="w-full px-3 py-2 border rounded" type="text" placeholder="Search machines..." id="searchInput">
-        </div>
+    <div class="flex justify-between mb-4">
+        <a class="button is-primary px-4 py-2" href="{{ path('app_machines_new') }}">
+            <span class="icon">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>Add New Machine</span>
+        </a>
+    </div>
 
-        <div class="table-container w-4/5 mx-auto">
-            <table class="table is-fullwidth">
-                <thead>
-                    <tr class="bg-gray-200 text-center">
-                        <th class="px-4 py-2">Id</th>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Max Capacity</th>
-                        <th class="px-4 py-2">Weight Increment</th>
-                        <th class="px-4 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="machineTableBody">
-                {% for machine in machines %}
-                    <tr class="text-center hover:bg-gray-100 cursor-pointer">
-                        <td class="border px-4 py-2">{{ machine.id }}</td>
-                        <td class="border px-4 py-2">{{ machine.name }}</td>
-                        <td class="border px-4 py-2">{{ machine.maxCapacity }}</td>
-                        <td class="border px-4 py-2">{{ machine.weightIncrement }}</td>
-                        <td class="border px-4 py-2">
-                            <a class="button is-small is-link" href="{{ path('app_machines_show', {'id': machine.id}) }}">View Details</a>
-                            <a class="button is-small is-primary" href="{{ path('app_machines_edit', {'id': machine.id}) }}">Edit Machine</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5" class="border px-4 py-2 text-center">No records found</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <section class="box bg-white shadow-md rounded pt-6 pb-8 mb-4 relative ">
+        {% if machines is not empty %}
+            <div class="swiper-container machines-swiper">
+                <div class="swiper-wrapper">
+                    {% for machine in machines %}
+                        <div class="swiper-slide">
+                            <div class="w-80 border rounded-lg overflow-hidden shadow-md m-2 mx-auto">
+                                <div class="flex justify-center items-center bg-blue-500 text-white h-32">
+                                    {% if machine.pictureUrl %}
+                                        <img src="{{ machine.pictureUrl }}" alt="{{ machine.name }}" class="h-32 w-auto">
+                                    {% else %}
+                                        <i class="fas fa-cogs text-4xl"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="p-4 text-center">
+                                    <h3 class="text-xl font-bold">{{ machine.name }}</h3>
+                                    <p class="mt-2 text-sm text-gray-600">{{ machine.description }}</p> 
+                                    <p class="mt-2">Max Capacity: {{ machine.maxCapacity }}</p>
+                                    <p class="mt-2 mb-2">Weight Increment: {{ machine.weightIncrement }}</p>
+                                    <a class="button is-link is-small" href="{{ path('app_machines_show', {'id': machine.id}) }}">
+                                        <span class="icon">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                        <span>View</span>
+                                    </a>
+                                    <a class="button is-info is-small" href="{{ path('app_machines_edit', {'id': machine.id}) }}">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span>Edit</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                <!-- Add Navigation -->
+                <div class="machines-swiper-button-next swiper-button-next top-0 right-0 mt-10 mr-1"></div>
+                <div class="machines-swiper-button-prev swiper-button-prev top-0 left-0 mt-10 ml-1"></div>
+            </div>
+        {% else %}
+            <p class="text-center">No machines found.</p>
+        {% endif %}
+    </section>
 
-        <div class="flex justify-center mt-4 mb-4">
-            <a class="button is-link px-4 py-2" href="{{ path('app_machines_new') }}">Add New Machine</a>
-        </div>
-    </main>
+    <div class="flex justify-between">
+        <a href="javascript:history.back()" class="button is-info px-4 py-2">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back</span>
+        </a>
+    </div>
+</main>
 
-    <script>
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        const tableBody = document.getElementById('machineTableBody');
-
-        searchInput.addEventListener('keyup', function() {
-            const query = searchInput.value.toLowerCase();
-            for (const row of tableBody.rows) {
-                const cells = Array.from(row.cells);
-                row.style.display = cells.some(cell => cell.textContent.toLowerCase().includes(query)) ? '' : 'none';
-            }
-        });
-    </script>
+<!-- Initialize Swiper -->
+<script>
+  var machinesSwiper = new Swiper('.machines-swiper', {
+    slidesPerView: 'auto',
+    spaceBetween: 10,
+    navigation: {
+      nextEl: '.machines-swiper-button-next',
+      prevEl: '.machines-swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    breakpoints: {
+      640: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 40,
+      },
+      1024: {
+        slidesPerView: 3,  // Changed the number of slides per view
+        spaceBetween: 50,
+      },
+    }
+  });
+</script>
 {% endblock %}

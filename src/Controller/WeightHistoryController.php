@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/weight-history')]
 class WeightHistoryController extends AbstractController
@@ -17,8 +18,10 @@ class WeightHistoryController extends AbstractController
     #[Route('/', name: 'app_weight_history_index', methods: ['GET'])]
     public function index(WeightHistoryRepository $weightHistoryRepository): Response
     {
+        $weightHistories = $weightHistoryRepository->findBy(['user_id' => $this->getUser()]);
+
         return $this->render('weight_history/index.html.twig', [
-            'weight_histories' => $weightHistoryRepository->findAll(),
+            'weight_histories' => $weightHistories,
         ]);
     }
 
@@ -26,6 +29,8 @@ class WeightHistoryController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $weightHistory = new WeightHistory();
+        $weightHistory->setUserId($this->getUser());
+
         $form = $this->createForm(WeightHistoryType::class, $weightHistory);
         $form->handleRequest($request);
 
@@ -33,7 +38,7 @@ class WeightHistoryController extends AbstractController
             $entityManager->persist($weightHistory);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_weight_history_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', ['id' => $weightHistory->getUserId()->getId()]);
         }
 
         return $this->render('weight_history/new.html.twig', [
@@ -45,6 +50,10 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}', name: 'app_weight_history_show', methods: ['GET'])]
     public function show(WeightHistory $weightHistory): Response
     {
+        if ($weightHistory->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your weight history!');
+        }
+
         return $this->render('weight_history/show.html.twig', [
             'weight_history' => $weightHistory,
         ]);
@@ -53,13 +62,17 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_weight_history_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, WeightHistory $weightHistory, EntityManagerInterface $entityManager): Response
     {
+        if ($weightHistory->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your weight history!');
+        }
+
         $form = $this->createForm(WeightHistoryType::class, $weightHistory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_weight_history_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', ['id' => $weightHistory->getUserId()->getId()]);
         }
 
         return $this->render('weight_history/edit.html.twig', [
@@ -71,11 +84,15 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}', name: 'app_weight_history_delete', methods: ['POST'])]
     public function delete(Request $request, WeightHistory $weightHistory, EntityManagerInterface $entityManager): Response
     {
+        if ($weightHistory->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('You do not have permission to delete this weight history!');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$weightHistory->getId(), $request->request->get('_token'))) {
             $entityManager->remove($weightHistory);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_weight_history_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_show', ['id' => $weightHistory->getUserId()->getId()]);
     }
 }
