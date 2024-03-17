@@ -18,10 +18,11 @@ class TrainingPlanController extends AbstractController
     #[Route('/', name: 'app_training_plan_index', methods: ['GET'])]
     public function index(TrainingPlanRepository $trainingPlanRepository): Response
     {
-        $trainingPlans = $trainingPlanRepository->findBy(['user_id' => $this->getUser()]);
+        // Fetch all training plans for the current user
+        $userTrainingPlans = $trainingPlanRepository->findBy(['user_id' => $this->getUser()]);
 
         return $this->render('training_plan/index.html.twig', [
-            'training_plans' => $trainingPlans,
+            'training_plans' => $userTrainingPlans,
         ]);
     }
 
@@ -35,8 +36,7 @@ class TrainingPlanController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($trainingPlan);
-            $entityManager->flush();
+            $this->persistAndFlush($entityManager, $trainingPlan);
 
             return $this->redirectToRoute('app_user_show', ['id' => $trainingPlan->getUserId()->getId()]);
         }
@@ -50,16 +50,20 @@ class TrainingPlanController extends AbstractController
     #[Route('/{id}', name: 'app_training_plan_show', methods: ['GET'])]
     public function show(TrainingPlan $trainingPlan, ?int $userId = null): Response
     {
-        if ($trainingPlan->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your training plan!');
+        try {
+            $this->denyAccessUnlessOwnedByCurrentUser($trainingPlan);
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', 'This is not your training plan!');
+
+            return $this->redirectToRoute('app_training_plan_index');
         }
 
         // Fetch the related TrainingPlanXMachines, Machines, and TrainingExecutions
-        $trainingPlanXMachines = $trainingPlan->getTrainingPlanXMachines();
+        $relatedTrainingPlanXMachines = $trainingPlan->getTrainingPlanXMachines();
 
         return $this->render('training_plan/show.html.twig', [
             'training_plan' => $trainingPlan,
-            'trainingPlanXMachines' => $trainingPlanXMachines,
+            'trainingPlanXMachines' => $relatedTrainingPlanXMachines,
             'user_id' => $userId,
         ]);
     }
@@ -67,8 +71,12 @@ class TrainingPlanController extends AbstractController
     #[Route('/{id}/edit', name: 'app_training_plan_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TrainingPlan $trainingPlan, EntityManagerInterface $entityManager): Response
     {
-        if ($trainingPlan->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your training plan!');
+        try {
+            $this->denyAccessUnlessOwnedByCurrentUser($trainingPlan);
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', 'This is not your training plan!');
+
+            return $this->redirectToRoute('app_training_plan_index');
         }
 
         $form = $this->createForm(TrainingPlanType::class, $trainingPlan);
@@ -89,8 +97,12 @@ class TrainingPlanController extends AbstractController
     #[Route('/{id}', name: 'app_training_plan_delete', methods: ['POST'])]
     public function delete(Request $request, TrainingPlan $trainingPlan, EntityManagerInterface $entityManager): Response
     {
-        if ($trainingPlan->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('You do not have permission to delete this training plan!');
+        try {
+            $this->denyAccessUnlessOwnedByCurrentUser($trainingPlan);
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', 'This is not your training plan!');
+
+            return $this->redirectToRoute('app_training_plan_index');
         }
 
         if ($this->isCsrfTokenValid('delete'.$trainingPlan->getId(), $request->request->get('_token'))) {
@@ -101,5 +113,24 @@ class TrainingPlanController extends AbstractController
         }
 
         return $this->redirectToRoute('app_training_plan_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Persist and flush an entity.
+     */
+    private function persistAndFlush(EntityManagerInterface $entityManager, $entity): void
+    {
+        $entityManager->persist($entity);
+        $entityManager->flush();
+    }
+
+    /**
+     * Deny access unless the training plan is owned by the current user.
+     */
+    private function denyAccessUnlessOwnedByCurrentUser(TrainingPlan $trainingPlan): void
+    {
+        if ($trainingPlan->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your training plan!');
+        }
     }
 }

@@ -17,8 +17,11 @@ class TrainingPlanXMachineController extends AbstractController
     #[Route('/', name: 'app_training_plan_x_machine_index', methods: ['GET'])]
     public function index(TrainingPlanXMachineRepository $trainingPlanXMachineRepository): Response
     {
+        // Fetch all TrainingPlanXMachine entities
+        $allTrainingPlanXMachines = $trainingPlanXMachineRepository->findAll();
+
         return $this->render('training_plan_x_machine/index.html.twig', [
-            'training_plan_x_machines' => $trainingPlanXMachineRepository->findAll(),
+            'training_plan_x_machines' => $allTrainingPlanXMachines,
         ]);
     }
 
@@ -32,8 +35,7 @@ class TrainingPlanXMachineController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($trainingPlanXMachine);
-            $entityManager->flush();
+            $this->persistAndFlush($entityManager, $trainingPlanXMachine);
 
             return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlanXMachine->getTrainingPlanId()->getId()]);
         }
@@ -81,5 +83,14 @@ class TrainingPlanXMachineController extends AbstractController
         }
 
         return $this->redirectToRoute('app_training_plan_x_machine_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Persist and flush an entity.
+     */
+    private function persistAndFlush(EntityManagerInterface $entityManager, $entity): void
+    {
+        $entityManager->persist($entity);
+        $entityManager->flush();
     }
 }

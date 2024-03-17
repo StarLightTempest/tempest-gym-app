@@ -23,8 +23,8 @@
                         <div class="swiper-slide">
                             <div class="w-80 border rounded-lg overflow-hidden shadow-md m-2 mx-auto">
                                 <div class="flex justify-center items-center bg-blue-500 text-white h-32">
-                                    {% if machine.pictureUrl %}
-                                        <img src="{{ machine.pictureUrl }}" alt="{{ machine.name }}" class="h-32 w-auto">
+                                    {% if machine.pictureURL %}
+                                        <img src="{{ asset(machine.pictureURL) }}" alt="{{ machine.name }}" class="h-32 w-auto">
                                     {% else %}
                                         <i class="fas fa-cogs text-4xl"></i>
                                     {% endif %}

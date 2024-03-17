@@ -18,10 +18,11 @@ class WeightHistoryController extends AbstractController
     #[Route('/', name: 'app_weight_history_index', methods: ['GET'])]
     public function index(WeightHistoryRepository $weightHistoryRepository): Response
     {
-        $weightHistories = $weightHistoryRepository->findBy(['user_id' => $this->getUser()]);
+        // Fetch the weight histories for the current user
+        $currentUserWeightHistories = $weightHistoryRepository->findBy(['user_id' => $this->getUser()]);
 
         return $this->render('weight_history/index.html.twig', [
-            'weight_histories' => $weightHistories,
+            'weight_histories' => $currentUserWeightHistories,
         ]);
     }
 
@@ -35,8 +36,7 @@ class WeightHistoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($weightHistory);
-            $entityManager->flush();
+            $this->persistAndFlush($entityManager, $weightHistory);
 
             return $this->redirectToRoute('app_user_show', ['id' => $weightHistory->getUserId()->getId()]);
         }
@@ -50,9 +50,7 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}', name: 'app_weight_history_show', methods: ['GET'])]
     public function show(WeightHistory $weightHistory): Response
     {
-        if ($weightHistory->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your weight history!');
-        }
+        $this->denyAccessUnlessOwnedByCurrentUser($weightHistory);
 
         return $this->render('weight_history/show.html.twig', [
             'weight_history' => $weightHistory,
@@ -62,9 +60,7 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_weight_history_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, WeightHistory $weightHistory, EntityManagerInterface $entityManager): Response
     {
-        if ($weightHistory->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your weight history!');
-        }
+        $this->denyAccessUnlessOwnedByCurrentUser($weightHistory);
 
         $form = $this->createForm(WeightHistoryType::class, $weightHistory);
         $form->handleRequest($request);
@@ -84,9 +80,7 @@ class WeightHistoryController extends AbstractController
     #[Route('/{id}', name: 'app_weight_history_delete', methods: ['POST'])]
     public function delete(Request $request, WeightHistory $weightHistory, EntityManagerInterface $entityManager): Response
     {
-        if ($weightHistory->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('You do not have permission to delete this weight history!');
-        }
+        $this->denyAccessUnlessOwnedByCurrentUser($weightHistory);
 
         if ($this->isCsrfTokenValid('delete'.$weightHistory->getId(), $request->request->get('_token'))) {
             $entityManager->remove($weightHistory);
@@ -94,5 +88,24 @@ class WeightHistoryController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_show', ['id' => $weightHistory->getUserId()->getId()]);
+    }
+
+    /**
+     * Persist and flush an entity.
+     */
+    private function persistAndFlush(EntityManagerInterface $entityManager, $entity): void
+    {
+        $entityManager->persist($entity);
+        $entityManager->flush();
+    }
+
+    /**
+     * Deny access unless the weight history is owned by the current user.
+     */
+    private function denyAccessUnlessOwnedByCurrentUser(WeightHistory $weightHistory): void
+    {
+        if ($weightHistory->getUserId() !== $this->getUser()) {
+            throw new AccessDeniedException('This is not your weight history!');
+        }
     }
 }

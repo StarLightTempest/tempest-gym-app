@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Machines;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +16,10 @@ class MachinesType extends AbstractType
             ->add('name')
             ->add('max_capacity')
             ->add('weight_increment')
-            ->add('Picture_URL')
+            ->add('pictureFile', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
             ->add('Description')
         ;
     }

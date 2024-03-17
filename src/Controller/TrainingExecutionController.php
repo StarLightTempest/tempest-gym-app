@@ -17,8 +17,11 @@ class TrainingExecutionController extends AbstractController
     #[Route('/', name: 'app_training_execution_index', methods: ['GET'])]
     public function index(TrainingExecutionRepository $trainingExecutionRepository): Response
     {
+        // Fetch all training executions
+        $allTrainingExecutions = $trainingExecutionRepository->findAll();
+
         return $this->render('training_execution/index.html.twig', [
-            'training_executions' => $trainingExecutionRepository->findAll(),
+            'training_executions' => $allTrainingExecutions,
         ]);
     }
 
@@ -30,18 +33,9 @@ class TrainingExecutionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($trainingExecution);
-            $entityManager->flush();
+            $this->persistAndFlush($entityManager, $trainingExecution);
 
-            $trainingPlanXMachine = $trainingExecution->getTrainingPlanXMachineId();
-            if ($trainingPlanXMachine) {
-                $trainingPlan = $trainingPlanXMachine->getTrainingPlanId();
-                if ($trainingPlan) {
-                    return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlan->getId()]);
-                }
-            }
-
-            return $this->redirectToRoute('app_training_execution_index');
+            return $this->redirectToTrainingPlanOrIndex($trainingExecution);
         }
 
         return $this->render('training_execution/new.html.twig', [
@@ -67,15 +61,7 @@ class TrainingExecutionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $trainingPlanXMachine = $trainingExecution->getTrainingPlanXMachineId();
-            if ($trainingPlanXMachine) {
-                $trainingPlan = $trainingPlanXMachine->getTrainingPlanId();
-                if ($trainingPlan) {
-                    return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlan->getId()]);
-                }
-            }
-
-            return $this->redirectToRoute('app_training_execution_index');
+            return $this->redirectToTrainingPlanOrIndex($trainingExecution);
         }
 
         return $this->render('training_execution/edit.html.twig', [
@@ -93,5 +79,30 @@ class TrainingExecutionController extends AbstractController
         }
 
         return $this->redirectToRoute('app_training_execution_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Persist and flush an entity.
+     */
+    private function persistAndFlush(EntityManagerInterface $entityManager, $entity): void
+    {
+        $entityManager->persist($entity);
+        $entityManager->flush();
+    }
+
+    /**
+     * Redirect to the training plan show page if possible, otherwise redirect to the training execution index page.
+     */
+    private function redirectToTrainingPlanOrIndex(TrainingExecution $trainingExecution): Response
+    {
+        $trainingPlanXMachine = $trainingExecution->getTrainingPlanXMachineId();
+        if ($trainingPlanXMachine) {
+            $trainingPlan = $trainingPlanXMachine->getTrainingPlanId();
+            if ($trainingPlan) {
+                return $this->redirectToRoute('app_training_plan_show', ['id' => $trainingPlan->getId()]);
+            }
+        }
+
+        return $this->redirectToRoute('app_training_execution_index');
     }
 }

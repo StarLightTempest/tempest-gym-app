@@ -7,6 +7,12 @@
         <div class="table-container w-4/5 mx-auto">
             <h1 class="text-3xl font-bold mb-4 text-center">Edit Machines</h1>
 
+            {% if machine.pictureURL %}
+                <div class="mb-4">
+                    <img src="{{ machine.pictureURL }}" alt="Machine Picture">
+                </div>
+            {% endif %}
+
             {{ include('machines/_form.html.twig',) }}
             
            <div class="flex justify-between mt-4 mb-4">

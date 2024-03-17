@@ -27,7 +27,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, UserAuthenticatorInterface $authenticator, AppAuthenticator $appAuthenticator, EntityManagerInterface $entityManager): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_user_dashboard');
@@ -38,30 +38,13 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $this->encodePasswordAndPersistUser($passwordHasher, $user, $form, $entityManager);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $this->sendConfirmationEmail($user);
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('no-reply@tempest-gym.de', 'Mail Bot'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-
-            return $userAuthenticator->authenticateUser(
+            return $authenticator->authenticateUser(
                 $user,
-                $authenticator,
+                $appAuthenticator,
                 $request
             );
         }
@@ -76,7 +59,6 @@ class RegistrationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // validate email confirmation link, sets User::isVerified=true and persists
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
         } catch (VerifyEmailExceptionInterface $exception) {
@@ -85,9 +67,38 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('app_user_dashboard');
+    }
+
+    /**
+     * Encodes the user's password and persists the user to the database.
+     */
+    private function encodePasswordAndPersistUser(UserPasswordHasherInterface $passwordHasher, User $user, $form, EntityManagerInterface $entityManager): void
+    {
+        $user->setPassword(
+            $passwordHasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            )
+        );
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
+
+    /**
+     * Sends a confirmation email to the user.
+     */
+    private function sendConfirmationEmail(User $user): void
+    {
+        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            (new TemplatedEmail())
+                ->from(new Address('no-reply@tempest-gym.de', 'Mail Bot'))
+                ->to($user->getEmail())
+                ->subject('Please Confirm your Email')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
     }
 }
