@@ -26,7 +26,7 @@ class ResetPasswordController extends AbstractController
 
     private $mailerFromAddress;
     private $mailerFromName;
-
+    // The constructor injects the necessary services and environment variables
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
@@ -36,7 +36,7 @@ class ResetPasswordController extends AbstractController
         $this->mailerFromAddress = $mailerFromAddress;
         $this->mailerFromName = $mailerFromName;
     }
-
+    // This method handles the password reset request form
     #[Route('', name: 'app_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer): Response
     {
@@ -52,7 +52,7 @@ class ResetPasswordController extends AbstractController
             'requestForm' => $form,
         ]);
     }
-
+    // This method checks if a reset token is present in the session
     #[Route('/check-email', name: 'app_check_email')]
     public function checkEmail(): Response
     {
@@ -63,7 +63,7 @@ class ResetPasswordController extends AbstractController
             'resetToken' => $resetToken,
         ]);
     }
-
+     // This method handles the password reset form
     #[Route('/reset/{token}', name: 'app_reset_password')]
     public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, string $token = null): Response
     {
@@ -102,7 +102,7 @@ class ResetPasswordController extends AbstractController
             'resetForm' => $form,
         ]);
     }
-
+    // This method sends the password reset email
     private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): RedirectResponse
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
