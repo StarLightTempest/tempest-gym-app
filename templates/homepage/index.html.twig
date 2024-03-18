@@ -9,58 +9,12 @@
         <p class="text-lg text-center mt-4">Join us and start your journey to a healthier lifestyle. Track your progress, manage your training plans and stay motivated!</p>
     </section>
 
-    <!-- Section 2: List all Users from Database -->
+    <!-- Section 2: Sign Up -->
     <section class="my-8">
-        <h2 class="text-2xl font-bold mb-4 text-blue-500">Users</h2>
-        <ul class="space-y-4">
-            {% for user in users %}
-                <li class="p-4 border rounded shadow bg-white">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold">{{ user.name }}</h3>
-                        <div class="flex space-x-2">
-                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_user_edit', {'id': user.id}) }}">Edit</a>
-                            {{ include('user/_delete_form.html.twig') }}
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
-
-    <!-- Section 3: List all Machines -->
-    <section class="my-8">
-        <h2 class="text-2xl font-bold mb-4 text-blue-500">Machines</h2>
-        <ul class="space-y-4">
-            {% for machine in machines %}
-                <li class="p-4 border rounded shadow bg-white">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold">{{ machine.name }}</h3>
-                        <div class="flex space-x-2">
-                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_machines_edit', {'id': machine.id}) }}">Edit</a>
-                            {{ include('machines/_delete_form.html.twig') }}
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
-
-    <!-- Section 4: List all Training Plans -->
-    <section class="my-8">
-        <h2 class="text-2xl font-bold mb-4 text-blue-500">Training Plans</h2>
-        <ul class="space-y-4">
-            {% for training_plan in trainingPlans %}
-                <li class="p-4 border rounded shadow bg-white">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xl font-bold">{{ training_plan.name }}</h3>
-                        <div class="flex space-x-2">
-                            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_training_plan_edit', {'id': training_plan.id}) }}">Edit</a>
-                            {{ include('training_plan/_delete_form.html.twig') }}
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+        <h2 class="text-2xl font-bold mb-4 text-blue-500">Sign Up to start</h2>
+        <div class="flex justify-center">
+            <a class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" href="{{ path('app_register') }}">Sign Up</a>
+        </div>
     </section>
 </div>
 </main>

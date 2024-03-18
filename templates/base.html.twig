@@ -17,6 +17,11 @@
         {% endblock %}
     </head>
     <body>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
        {% block header %}
 <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">

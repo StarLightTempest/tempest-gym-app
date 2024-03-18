@@ -53,7 +53,8 @@ class TrainingPlanController extends AbstractController
         try {
             $this->denyAccessUnlessOwnedByCurrentUser($trainingPlan);
         } catch (AccessDeniedException $e) {
-            $this->addFlash('error', 'This is not your training plan!');
+            $this->addFlash('error', 'Your not authoreized to see at this training Plan!');
+
 
             return $this->redirectToRoute('app_training_plan_index');
         }
@@ -75,6 +76,7 @@ class TrainingPlanController extends AbstractController
             $this->denyAccessUnlessOwnedByCurrentUser($trainingPlan);
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', 'This is not your training plan!');
+            dd('wilhelm');
 
             return $this->redirectToRoute('app_training_plan_index');
         }
