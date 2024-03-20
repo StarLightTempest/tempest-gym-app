@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\WeightHistory;
 use App\Form\WeightHistoryType;
 use App\Repository\WeightHistoryRepository;
+use App\Traits\UserCheckerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 #[Route('/weight-history')]
 class WeightHistoryController extends AbstractController
 {
+    use UserCheckerTrait;
+
     #[Route('/', name: 'app_weight_history_index', methods: ['GET'])]
     public function index(WeightHistoryRepository $weightHistoryRepository): Response
     {
@@ -104,8 +107,6 @@ class WeightHistoryController extends AbstractController
      */
     private function denyAccessUnlessOwnedByCurrentUser(WeightHistory $weightHistory): void
     {
-        if ($weightHistory->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your weight history!');
-        }
+        $this->checkLoggedUser($weightHistory->getUserId());
     }
 }

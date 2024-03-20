@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\TrainingPlanRepository;
 use App\Repository\UserRepository;
+use App\Traits\UserCheckerTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class UserDashboardController extends AbstractController
 {
+    use UserCheckerTrait;
+
     #[Route('/user-dashboard', name: 'app_user_dashboard')]
     public function index(UserRepository $userRepository, TrainingPlanRepository $trainingPlanRepository): Response
     {
@@ -20,6 +23,9 @@ class UserDashboardController extends AbstractController
         // Fetch the currently authenticated user
         /**@var User $authenticatedUser */
         $authenticatedUser = $this->getUser();
+
+        // Check if the authenticated user is the same as the logged-in user
+        $this->checkLoggedUser($authenticatedUser);
 
         // Fetch only the training plans related to the authenticated user
         $userTrainingPlans = $trainingPlanRepository->findBy(['user_id' => $authenticatedUser]);

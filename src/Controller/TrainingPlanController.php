@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\TrainingPlan;
 use App\Form\TrainingPlanType;
 use App\Repository\TrainingPlanRepository;
+use App\Traits\UserCheckerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 #[Route('/training-plan')]
 class TrainingPlanController extends AbstractController
 {
+    use UserCheckerTrait;
     #[Route('/', name: 'app_training_plan_index', methods: ['GET'])]
     public function index(TrainingPlanRepository $trainingPlanRepository): Response
     {
@@ -131,8 +133,6 @@ class TrainingPlanController extends AbstractController
      */
     private function denyAccessUnlessOwnedByCurrentUser(TrainingPlan $trainingPlan): void
     {
-        if ($trainingPlan->getUserId() !== $this->getUser()) {
-            throw new AccessDeniedException('This is not your training plan!');
-        }
+        $this->checkLoggedUser($trainingPlan->getUserId());
     }
 }

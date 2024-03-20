@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class MachinesType extends AbstractType
 {
@@ -19,6 +20,15 @@ class MachinesType extends AbstractType
             ->add('pictureFile', FileType::class, [
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new Image([
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid PNG or JPEG image.',
+                    ])
+                ],
             ])
             ->add('Description')
         ;
