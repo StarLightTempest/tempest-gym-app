@@ -6,8 +6,14 @@ RUN apt-get update && apt-get install -y \
     zip \
     && docker-php-ext-install zip
 
-# Install Composer
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+# install mysql extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
+
+# install composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
 
 # Set working directory
 WORKDIR /var/www
