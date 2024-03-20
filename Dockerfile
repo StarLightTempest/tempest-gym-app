@@ -16,7 +16,7 @@ WORKDIR /var/www
 COPY composer.json composer.lock ./
 
 # Install app dependencies
-RUN composer install
+RUN composer install  --no-interaction
 
 # Copy the rest of the application
 COPY . .
